@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Work Hours Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .day-entry { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .day-entry label { flex: 1; }
+        .day-entry input { flex: 1; margin-left: 10px; }
+        .result { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Monthly Work Hours Calculator</h1>
+        <form id="workHoursForm">
+            <!-- Generate input fields for 31 days -->
+            <div id="dayInputs"></div>
+            <button type="button" onclick="calculateTotalHours()">Calculate Total Hours</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Function to generate input fields for each day of the month
+        function generateDayInputs() {
+            const dayInputs = document.getElementById('dayInputs');
+            for (let i = 1; i <= 31; i++) {
+                dayInputs.innerHTML += `
+                    <div class="day-entry">
+                        <label>Day ${i}:</label>
+                        <input type="time" id="punchIn${i}" placeholder="Punch In">
+                        <input type="time" id="punchOut${i}" placeholder="Punch Out">
+                    </div>`;
+            }
+        }
+
+        // Calculate total hours worked
+        function calculateTotalHours() {
+            let totalMinutes = 0;
+            for (let i = 1; i <= 31; i++) {
+                const punchIn = document.getElementById(`punchIn${i}`).value;
+                const punchOut = document.getElementById(`punchOut${i}`).value;
+                
+                if (punchIn && punchOut) {
+                    const [inHours, inMinutes] = punchIn.split(':').map(Number);
+                    const [outHours, outMinutes] = punchOut.split(':').map(Number);
+
+                    // Convert time to minutes
+                    const punchInTime = inHours * 60 + inMinutes;
+                    const punchOutTime = outHours * 60 + outMinutes;
+
+                    // Calculate the time difference in minutes
+                    totalMinutes += punchOutTime - punchInTime;
+                }
+            }
+
+            // Convert total minutes to hours and minutes
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            // Display the result
+            document.getElementById('result').textContent = `Total Work Time: ${hours} hours and ${minutes} minutes`;
+        }
+
+        // Initialize the day inputs on page load
+        generateDayInputs();
+    </script>
+</body>
+</html>
